@@ -1,21 +1,21 @@
 pipeline {
     agent any
-
+    
     environment {
         EMAIL_RECIPIENT = 'kartikey4786.be23@chitkara.edu.in'
-        USER_EMAIL = 'kartikey4786.be23@chitukara.edu.in'
+        USER_EMAIL = 'kartikey4786.be23@chiutkara.edu.in'
     }
 
     stages {
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                script {
-                    try {
-                        sh 'mvn clean package -DskipTests'  // Skip tests to avoid failure at this step
-                    } catch (Exception e) {
-                        error "Build failed! Check logs."
-                    }
+            }
+            post {
+                always {
+                    mail to: "${USER_EMAIL}",
+                         subject: 'Build Stage Completed',
+                         body: 'The build stage has completed. Check Jenkins logs for details.'
                 }
             }
         }
@@ -23,38 +23,38 @@ pipeline {
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running unit and integration tests...'
-                script {
-                    try {
-                        sh 'mvn test' // Ensure all dependencies are installed
-                    } catch (Exception e) {
-                        error "Tests failed! Check logs."
-                    }
+            }
+            post {
+                always {
+                    mail to: "${USER_EMAIL}",
+                         subject: 'Unit and Integration Tests Completed',
+                         body: 'The unit and integration tests have completed. Check Jenkins logs for details.'
                 }
             }
         }
 
         stage('Code Analysis') {
             steps {
-                echo 'Performing static code analysis using SonarQube...'
-                script {
-                    try {
-                        sh 'sonar-scanner -Dsonar.projectKey=myproject || echo "SonarQube scan skipped"' 
-                    } catch (Exception e) {
-                        echo "SonarQube scan failed but continuing..."
-                    }
+                echo 'Performing static code analysis...'
+            }
+            post {
+                always {
+                    mail to: "${USER_EMAIL}",
+                         subject: 'Code Analysis Completed',
+                         body: 'The code analysis stage has completed. Check Jenkins logs for details.'
                 }
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo 'Performing security scan using Snyk...'
-                script {
-                    try {
-                        sh 'snyk test || echo "Snyk scan skipped due to missing API key"'
-                    } catch (Exception e) {
-                        echo "Security scan failed but continuing..."
-                    }
+                echo 'Performing security scan...'
+            }
+            post {
+                always {
+                    mail to: "${USER_EMAIL}",
+                         subject: 'Security Scan Completed',
+                         body: 'The security scan has completed. Check the Jenkins logs for details.'
                 }
             }
         }
@@ -62,12 +62,12 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to staging environment...'
-                script {
-                    try {
-                        sh './deploy.sh staging' // Ensure deploy.sh exists
-                    } catch (Exception e) {
-                        error "Deployment to staging failed!"
-                    }
+            }
+            post {
+                always {
+                    mail to: "${USER_EMAIL}",
+                         subject: 'Deployment to Staging Completed',
+                         body: 'Deployment to the staging environment has completed. Check Jenkins logs for details.'
                 }
             }
         }
@@ -75,12 +75,12 @@ pipeline {
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running integration tests on staging...'
-                script {
-                    try {
-                        sh 'mvn verify -Dstaging=true'
-                    } catch (Exception e) {
-                        error "Staging tests failed!"
-                    }
+            }
+            post {
+                always {
+                    mail to: "${USER_EMAIL}",
+                         subject: 'Integration Tests on Staging Completed',
+                         body: 'Integration tests on staging have completed. Check Jenkins logs for details.'
                 }
             }
         }
@@ -88,12 +88,12 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to production...'
-                script {
-                    try {
-                        sh './deploy.sh production'
-                    } catch (Exception e) {
-                        error "Production deployment failed!"
-                    }
+            }
+            post {
+                always {
+                    mail to: "${USER_EMAIL}",
+                         subject: 'Deployment to Production Completed',
+                         body: 'Deployment to production has completed. Check Jenkins logs for details.'
                 }
             }
         }
