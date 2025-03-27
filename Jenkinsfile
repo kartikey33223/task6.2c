@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EMAIL_RECIPIENT = 'kartikey4786.be23@chitkara.edu.in'
-        USER_EMAIL = 'kartikey4786.be23@chitkara.edu.in'
+        USER_EMAIL = 'kartikey4786.be23@chitukara.edu.in'
     }
 
     stages {
